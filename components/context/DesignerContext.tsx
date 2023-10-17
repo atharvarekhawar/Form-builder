@@ -30,7 +30,8 @@ export default function DesignerContextProvider({ children }: { children: ReactN
   };
 
   const removeElement = (id: string) => {
-    setElements((prev) => prev.filter((element) => element.id !== id));
+    if(elements.length === 1) setSelectedElement(null); // to change the sidebar to formElements i fno element is present
+   setElements((prev) => prev.filter((element) => element.id !== id));
   };
 
   const updateElement = (id: string, element: FormElementInstance) => {
