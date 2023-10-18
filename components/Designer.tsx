@@ -19,7 +19,7 @@ import { Button } from "./ui/button";
 import { BiSolidTrash } from "react-icons/bi";
 
 const Designer = () => {
-  const { elements, addElement,selectedElement,setSelectedElement } = useDesigner();
+  const { elements, addElement, removeElement, selectedElement, setSelectedElement } = useDesigner();
   const droppable = useDroppable({
     id: "designer-drop-area",
     data: {
@@ -33,8 +33,7 @@ const Designer = () => {
       if (!active || !over) return;
 
       const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
-      const isDroppingOverDesignerDropArea =
-        over.data?.current?.isDesignerDropArea;
+      const isDroppingOverDesignerDropArea = over.data?.current?.isDesignerDropArea;
 
       const droppingSidebarBtnOverDesignerDropArea =
         isDesignerBtnElement && isDroppingOverDesignerDropArea;
@@ -49,13 +48,72 @@ const Designer = () => {
         addElement(elements.length, newElement);
         return;
       }
+
+      //Second scenario
+      const isDroppingOverDesignerElementTopHalf = over.data?.current?.isTopHalfDesignerElement;
+      const isDroppingOverDesignerElementBottomHalf = over.data?.current?.isBottomHalfDesignerElement;
+      const isDroppingOverDesignerElement = isDroppingOverDesignerElementTopHalf || isDroppingOverDesignerElementBottomHalf;
+      const droppingSidebarBtnOverDesignerElement = isDesignerBtnElement && isDroppingOverDesignerElement
+
+      if (droppingSidebarBtnOverDesignerElement) {
+        const type = active.data?.current?.type;
+        const newElement = FormElements[type as ElementsType].construct(idGenerator());
+
+        const overId = over.data?.current?.elementId;
+
+        const indexOfDroppedElement = elements.findIndex((el) => el.id === overId);
+
+        if (indexOfDroppedElement === -1) {
+          throw new Error("Element not found");
+        }
+
+        let indexOfNewElement = indexOfDroppedElement // if it is top half then 
+        //the dropped element will be replaced by new element
+
+        //if it is bottom half then 
+        //the new element will replace the next element of dropped element
+        if (isDroppingOverDesignerElementBottomHalf) {
+          indexOfNewElement = indexOfDroppedElement + 1;
+        }
+
+        addElement(indexOfNewElement, newElement);
+        return;
+      }
+
+      //Third scenario
+      const isDesignerElement = active.data?.current?.isDesignerElement;
+      const isDesignerElementDroppingOverDesignerElement = isDesignerElement && isDroppingOverDesignerElement;
+
+      if (isDesignerElementDroppingOverDesignerElement) {
+        const draggedElementId = active.data?.current?.elementId;
+        const droppedElementId = over.data?.current?.elementId;
+
+        const draggedElementIndex = elements.findIndex((el) => el.id === draggedElementId);
+        const droppedElementIndex = elements.findIndex((el) => el.id === droppedElementId);
+
+
+        if (draggedElementIndex === -1 || droppedElementIndex === -1) {
+          throw new Error("Either dropped or dragged element not found");
+        }
+
+        const newElement = { ...elements[draggedElementIndex] }; //creating shallow copy
+        removeElement(draggedElementId);
+
+        if (isDroppingOverDesignerElementTopHalf) {
+          addElement(droppedElementIndex, newElement);
+        }
+        else {
+          addElement(droppedElementIndex + 1, newElement);
+        }
+        return;
+      }
     },
   });
 
   return (
     <div className="flex w-full h-full">
-      <div className="p-4 w-full" onClick={()=>{
-        if(selectedElement){
+      <div className="p-4 w-full" onClick={() => {
+        if (selectedElement) {
           setSelectedElement(null);
         }
       }}>
