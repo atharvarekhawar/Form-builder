@@ -2,9 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/providers/ThemeProvider"
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import DesignerContextProvider from "@/components/context/DesignerContext";
 import { Toaster } from "@/components/ui/toaster";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,17 +23,18 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={inter.className}>
-        <DesignerContextProvider>
-          <ThemeProvider
+          <NextTopLoader />
+          <DesignerContextProvider>
+            <ThemeProvider
               attribute="class"
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
             >
               {children}
-              <Toaster/>
+              <Toaster />
             </ThemeProvider>
-        </DesignerContextProvider>
+          </DesignerContextProvider>
         </body>
       </html>
     </ClerkProvider>
