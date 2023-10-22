@@ -162,9 +162,9 @@ async function SubmissionsTable({ id }: { id: number }) {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={index}>
-                {/* {columns.map((column) => (
+                {columns.map((column) => (
                   <RowCell key={column.id} type={column.type} value={row[column.id]} />
-                ))} */}
+                ))}
                 <TableCell className="text-muted-foreground text-right">
                   {formatDistance(row.submittedAt, new Date(), {
                     addSuffix: true,
@@ -179,20 +179,20 @@ async function SubmissionsTable({ id }: { id: number }) {
   );
 }
 
-// function RowCell({ type, value }: { type: ElementsType; value: string }) {
-//   let node: ReactNode = value;
+function RowCell({ type, value }: { type: ElementsType; value: string }) {
+  let node: ReactNode = value;
 
-//   switch (type) {
-//     case "DateField":
-//       if (!value) break;
-//       const date = new Date(value);
-//       node = <Badge variant={"outline"}>{format(date, "dd/MM/yyyy")}</Badge>;
-//       break;
-//     case "CheckboxField":
-//       const checked = value === "true";
-//       node = <Checkbox checked={checked} disabled />;
-//       break;
-//   }
+  // switch (type) {
+  //   case "DateField":
+  //     if (!value) break;
+  //     const date = new Date(value);
+  //     node = <Badge variant={"outline"}>{format(date, "dd/MM/yyyy")}</Badge>;
+  //     break;
+  //   case "CheckboxField":
+  //     const checked = value === "true";
+  //     node = <Checkbox checked={checked} disabled />;
+  //     break;
+  // }
 
-//   return <TableCell>{node}</TableCell>;
-// }
+  return <TableCell>{node}</TableCell>;
+}
