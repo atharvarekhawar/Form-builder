@@ -1,3 +1,5 @@
+"use client"
+
 import { MdTextFields } from "react-icons/md";
 import {
   ElementsType,
